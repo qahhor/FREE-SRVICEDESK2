@@ -84,7 +84,12 @@ An Open-Source Service Desk Platform built with a modular monolith/microservices
    mvn spring-boot:run
    ```
 
-2. The service will be available at `http://localhost:8080`
+2. For development with SQL logging and auto-DDL updates, use the dev profile:
+   ```bash
+   mvn spring-boot:run -Dspring-boot.run.profiles=dev
+   ```
+
+3. The service will be available at `http://localhost:8080`
 
 ## Modules
 

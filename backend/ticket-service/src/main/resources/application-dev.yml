@@ -1,0 +1,11 @@
+# Development profile configuration
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+logging:
+  level:
+    com.greenwhitesolutions.servicedesk: DEBUG
+    org.hibernate.SQL: DEBUG

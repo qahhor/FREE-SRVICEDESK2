@@ -1,4 +1,4 @@
-# Service Desk Platform
+# Smartup Service Desk Platform
 
 An Open-Source Service Desk Platform built with a modular monolith/microservices architecture.
 
@@ -15,7 +15,7 @@ An Open-Source Service Desk Platform built with a modular monolith/microservices
 ### Infrastructure
 - **Docker & Docker Compose** - Containerization
 - **PostgreSQL 15** - Relational database
-- **Redis 7** - Caching layer
+- **Redis** - Caching layer
 - **Elasticsearch 8.11** - Search and analytics (optional)
 
 ### Frontend (Planned)

@@ -22,6 +22,7 @@
     <modules>
         <module>common-lib</module>
         <module>ticket-service</module>
+        <module>ai-service</module>
     </modules>
 
     <properties>

@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: knowledge-service
+
+  elasticsearch:
+    uris: http://localhost:9200
+
+server:
+  port: 8083

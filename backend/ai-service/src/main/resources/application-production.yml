@@ -1,0 +1,42 @@
+server:
+  port: ${SERVER_PORT:8084}
+
+spring:
+  application:
+    name: ai-service
+
+# AI Provider configuration
+app:
+  ai:
+    provider: ${AI_PROVIDER:openai}
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+      model: ${OPENAI_MODEL:gpt-4o}
+      timeout: ${OPENAI_TIMEOUT:30}
+      max-tokens: ${OPENAI_MAX_TOKENS:500}
+      temperature: ${OPENAI_TEMPERATURE:0.3}
+
+# Actuator configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+# Logging configuration
+logging:
+  level:
+    root: INFO
+    com.greenwhitesolutions: INFO
+    org.springframework: WARN
+
+# OpenAPI documentation
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: ${SWAGGER_ENABLED:false}

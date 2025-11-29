@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: ai-service
+
+server:
+  port: 8084
+
+app:
+  ai:
+    provider: openai # or anthropic
+    openai:
+      api-key: ${OPENAI_API_KEY:changeme}
+      model: gpt-4o

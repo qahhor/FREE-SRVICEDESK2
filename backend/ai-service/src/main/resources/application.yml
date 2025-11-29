@@ -9,5 +9,8 @@ app:
   ai:
     provider: openai # or anthropic
     openai:
-      api-key: ${OPENAI_API_KEY:changeme}
+      api-key: ${OPENAI_API_KEY:}
       model: gpt-4o
+    anthropic:
+      api-key: ${ANTHROPIC_API_KEY:}
+      model: claude-3-opus-20240229

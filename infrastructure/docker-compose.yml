@@ -53,6 +53,56 @@ services:
       timeout: 10s
       retries: 5
 
+  ai-service:
+    build:
+      context: ../backend/ai-service
+      dockerfile: Dockerfile
+    container_name: servicedesk-ai-service
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_PROFILES_ACTIVE=production
+      - AI_PROVIDER=${AI_PROVIDER:-mock}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+    networks:
+      - servicedesk-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8084/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+
+  ticket-service:
+    build:
+      context: ../backend/ticket-service
+      dockerfile: Dockerfile
+    container_name: servicedesk-ticket-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=production
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/servicedesk
+      - SPRING_DATASOURCE_USERNAME=servicedesk
+      - SPRING_DATASOURCE_PASSWORD=servicedesk
+      - REDIS_HOST=redis
+      - AI_SERVICE_URL=http://ai-service:8084
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      ai-service:
+        condition: service_healthy
+    networks:
+      - servicedesk-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8081/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+
 volumes:
   postgres_data:
   redis_data:

@@ -1,0 +1,145 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., v1.0.0)'
+        required: true
+        type: string
+      build_docker:
+        description: 'Build and push Docker images'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Build and test
+      run: |
+        cd backend
+        mvn -T 1C clean verify -B
+
+    - name: Package applications
+      run: |
+        cd backend
+        mvn -T 1C package -DskipTests -B
+
+    - name: Upload ticket-service artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ticket-service-jar
+        path: backend/ticket-service/target/*.jar
+        retention-days: 30
+
+    - name: Upload ai-service artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ai-service-jar
+        path: backend/ai-service/target/*.jar
+        retention-days: 30
+
+    - name: Upload knowledge-service artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: knowledge-service-jar
+        path: backend/knowledge-service/target/*.jar
+        retention-days: 30
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.event.inputs.build_docker == 'true')
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Build applications
+      run: |
+        cd backend
+        mvn -T 1C package -DskipTests -B
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Get version
+      id: version
+      run: |
+        if [ "${{ github.event_name }}" = "push" ]; then
+          echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        else
+          echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Build and push ticket-service
+      uses: docker/build-push-action@v5
+      with:
+        context: backend/ticket-service
+        push: true
+        tags: |
+          ghcr.io/${{ github.repository_owner }}/ticket-service:${{ steps.version.outputs.VERSION }}
+          ghcr.io/${{ github.repository_owner }}/ticket-service:latest
+
+    - name: Build and push ai-service
+      uses: docker/build-push-action@v5
+      with:
+        context: backend/ai-service
+        push: true
+        tags: |
+          ghcr.io/${{ github.repository_owner }}/ai-service:${{ steps.version.outputs.VERSION }}
+          ghcr.io/${{ github.repository_owner }}/ai-service:latest
+
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          artifacts/**/*.jar
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

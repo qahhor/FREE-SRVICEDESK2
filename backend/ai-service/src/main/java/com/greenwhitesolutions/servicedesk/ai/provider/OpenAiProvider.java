@@ -82,8 +82,8 @@ public class OpenAiProvider implements AiProvider {
                 "messages", List.of(
                         Map.of("role", "user", "content", prompt)
                 ),
-                "max_tokens", 500,
-                "temperature", 0.3
+                "max_tokens", config.getMaxTokens(),
+                "temperature", config.getTemperature()
         );
 
         try {
@@ -165,7 +165,8 @@ public class OpenAiProvider implements AiProvider {
             return labels;
         }
 
-        String[] parts = response.trim().split("[,\\s]+");
+        // Split on commas with optional surrounding whitespace
+        String[] parts = response.trim().split("\\s*,\\s*");
         for (String part : parts) {
             String label = part.trim().toLowerCase();
             if (!label.isEmpty()) {

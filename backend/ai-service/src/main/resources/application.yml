@@ -18,6 +18,10 @@ app:
       timeout: ${OPENAI_TIMEOUT:30}
       # Base URL for OpenAI API
       base-url: ${OPENAI_BASE_URL:https://api.openai.com}
+      # Maximum number of tokens in the response
+      max-tokens: ${OPENAI_MAX_TOKENS:500}
+      # Temperature for response generation (0.0 to 2.0)
+      temperature: ${OPENAI_TEMPERATURE:0.3}
 
 # OpenAPI documentation
 springdoc:

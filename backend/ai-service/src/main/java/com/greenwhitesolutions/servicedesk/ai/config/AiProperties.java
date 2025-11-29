@@ -49,6 +49,17 @@ public class AiProperties {
         private String baseUrl = "https://api.openai.com";
 
         /**
+         * Maximum number of tokens in the response.
+         */
+        private int maxTokens = 500;
+
+        /**
+         * Temperature for response generation (0.0 to 2.0).
+         * Lower values produce more deterministic responses.
+         */
+        private double temperature = 0.3;
+
+        /**
          * Checks if a valid API key is configured.
          *
          * @return true if API key is set and not empty

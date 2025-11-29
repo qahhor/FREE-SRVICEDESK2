@@ -23,6 +23,7 @@
         <module>common-lib</module>
         <module>ticket-service</module>
         <module>ai-service</module>
+        <module>knowledge-service</module>
     </modules>
 
     <properties>

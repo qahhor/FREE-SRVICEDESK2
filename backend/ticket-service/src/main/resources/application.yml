@@ -22,4 +22,8 @@ spring:
       port: 6379
 
 server:
-  port: 8080
+  port: 8081
+
+app:
+  ai-service:
+    url: http://localhost:8084

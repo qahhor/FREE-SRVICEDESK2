@@ -1,0 +1,126 @@
+openapi: 3.0.3
+info:
+  title: AI Service API
+  description: AI and LLM integration service for Service Desk Platform. Provides text classification and summarization capabilities.
+  version: 1.0.0
+  contact:
+    name: Green White Solutions
+    email: support@greenwhitesolutions.com
+  license:
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8084
+    description: Local development server
+
+tags:
+  - name: AI Operations
+    description: Endpoints for text classification and summarization
+
+paths:
+  /api/v1/ai/classify:
+    post:
+      tags:
+        - AI Operations
+      summary: Classify text
+      description: Analyzes the input text and returns relevant classification labels. Uses mock provider if OPENAI_API_KEY is not set.
+      operationId: classifyText
+      requestBody:
+        description: Text to classify
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClassifyRequest'
+            example:
+              text: "My computer won't start and the screen is black"
+      responses:
+        '200':
+          description: Successfully classified the text
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassifyResponse'
+              example:
+                labels:
+                  - hardware
+                  - critical
+                  - desktop
+        '400':
+          description: Invalid request body
+
+  /api/v1/ai/summarize:
+    post:
+      tags:
+        - AI Operations
+      summary: Summarize text
+      description: Generates a summary of the input text. Uses mock provider if OPENAI_API_KEY is not set.
+      operationId: summarizeText
+      requestBody:
+        description: Text to summarize
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SummarizeRequest'
+            example:
+              text: "This is a long description of a technical issue that needs to be summarized..."
+      responses:
+        '200':
+          description: Successfully summarized the text
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SummarizeResponse'
+              example:
+                summary: "Computer not starting, black screen issue"
+        '400':
+          description: Invalid request body
+
+components:
+  schemas:
+    ClassifyRequest:
+      type: object
+      description: Request for classifying text
+      properties:
+        text:
+          type: string
+          description: The text to classify
+          example: "My computer won't start and the screen is black"
+      required:
+        - text
+
+    ClassifyResponse:
+      type: object
+      description: Response containing classification labels
+      properties:
+        labels:
+          type: array
+          description: List of classification labels
+          items:
+            type: string
+          example:
+            - hardware
+            - critical
+            - desktop
+
+    SummarizeRequest:
+      type: object
+      description: Request for summarizing text
+      properties:
+        text:
+          type: string
+          description: The text to summarize
+          example: "This is a long description of a technical issue..."
+      required:
+        - text
+
+    SummarizeResponse:
+      type: object
+      description: Response containing summarized text
+      properties:
+        summary:
+          type: string
+          description: The summarized text
+          example: "Computer not starting, black screen issue"

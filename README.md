@@ -28,12 +28,19 @@ An Open-Source Service Desk Platform built with a modular monolith/microservices
 │   ├── pom.xml                 # Parent POM (multi-module Maven project)
 │   ├── common-lib/             # Shared utilities and common classes
 │   │   └── pom.xml
-│   └── ticket-service/         # Ticket management microservice
+│   ├── ticket-service/         # Ticket management microservice (port 8081)
+│   │   ├── pom.xml
+│   │   └── src/
+│   │       └── main/
+│   │           ├── java/       # Java source files
+│   │           └── resources/  # Configuration files
+│   └── ai-service/             # AI and LLM integration service (port 8084)
 │       ├── pom.xml
+│       ├── README.md           # AI service documentation
 │       └── src/
 │           └── main/
 │               ├── java/       # Java source files
-│               └── resources/  # Configuration files
+│               └── resources/  # Configuration files and OpenAPI spec
 ├── infrastructure/
 │   └── docker-compose.yml      # Docker services configuration
 └── README.md
@@ -89,7 +96,27 @@ An Open-Source Service Desk Platform built with a modular monolith/microservices
    mvn spring-boot:run -Dspring-boot.run.profiles=dev
    ```
 
-3. The service will be available at `http://localhost:8080`
+3. The service will be available at `http://localhost:8081`
+
+### Running the AI Service
+
+1. After building, run the AI service:
+   ```bash
+   cd backend/ai-service
+   mvn spring-boot:run
+   ```
+
+2. The service will be available at `http://localhost:8084`
+
+3. Access Swagger UI documentation at: `http://localhost:8084/swagger-ui/index.html`
+
+4. By default, the mock AI provider is used. To enable OpenAI provider:
+   ```bash
+   export OPENAI_API_KEY=your-api-key-here
+   mvn spring-boot:run
+   ```
+
+See `backend/ai-service/README.md` for more details.
 
 ## Modules
 
@@ -101,6 +128,19 @@ Core service for managing support tickets, including:
 - Ticket creation and management
 - Ticket status tracking
 - Ticket assignment
+- AI-powered ticket classification (via ai-service integration)
+
+**Port:** 8081
+
+### ai-service
+AI and LLM integration service for text classification and summarization:
+- Text classification (categorize ticket descriptions)
+- Text summarization
+- Supports mock provider (development) and OpenAI provider (production)
+- OpenAPI/Swagger documentation
+
+**Port:** 8084
+**Swagger UI:** http://localhost:8084/swagger-ui/index.html
 
 ## Configuration
 

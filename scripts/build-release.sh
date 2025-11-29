@@ -50,7 +50,13 @@ echo ""
 # Check Java version
 echo -e "${YELLOW}Checking Java version...${NC}"
 java -version 2>&1 | head -1
-JAVA_VERSION=$(java -version 2>&1 | head -1 | cut -d'"' -f2 | cut -d'.' -f1)
+# Extract major version - handles both old (1.8.0) and new (17.0.1) version formats
+JAVA_VERSION_STRING=$(java -version 2>&1 | head -1 | cut -d'"' -f2)
+if [[ "$JAVA_VERSION_STRING" == 1.* ]]; then
+    JAVA_VERSION=$(echo "$JAVA_VERSION_STRING" | cut -d'.' -f2)
+else
+    JAVA_VERSION=$(echo "$JAVA_VERSION_STRING" | cut -d'.' -f1)
+fi
 if [ "$JAVA_VERSION" -lt 17 ]; then
     echo -e "${RED}Error: Java 17 or higher is required${NC}"
     exit 1

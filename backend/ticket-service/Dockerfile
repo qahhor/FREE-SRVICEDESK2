@@ -6,6 +6,9 @@ LABEL description="Ticket Service - Ticket management microservice"
 # Create app directory
 WORKDIR /app
 
+# Install curl for health checks
+RUN apk add --no-cache curl
+
 # Create non-root user for security
 RUN addgroup -S servicedesk && adduser -S servicedesk -G servicedesk
 
@@ -23,7 +26,7 @@ EXPOSE 8081
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD wget --quiet --tries=1 --spider http://localhost:8081/actuator/health || exit 1
+    CMD curl -f http://localhost:8081/actuator/health || exit 1
 
 # JVM settings for containers
 ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"

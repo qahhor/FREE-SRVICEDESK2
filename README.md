@@ -1,5 +1,10 @@
 # Smartup Service Desk Platform
 
+[![CI](https://github.com/qahhor/FREE-SRVICEDESK2/actions/workflows/ci.yml/badge.svg)](https://github.com/qahhor/FREE-SRVICEDESK2/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Java 17](https://img.shields.io/badge/Java-17-blue.svg)](https://adoptium.net/)
+[![Spring Boot 3.2](https://img.shields.io/badge/Spring%20Boot-3.2.0-brightgreen.svg)](https://spring.io/projects/spring-boot)
+
 An Open-Source Service Desk Platform built with a modular monolith/microservices architecture.
 
 ## Tech Stack
@@ -153,6 +158,48 @@ Default database connection settings:
 - **Username:** servicedesk
 - **Password:** servicedesk
 
+### AI Provider Configuration
+
+The AI service supports two providers:
+
+| Provider | Description | Configuration |
+|----------|-------------|---------------|
+| Mock | Default, deterministic responses for development | No configuration needed |
+| OpenAI | Production-ready with real AI capabilities | Set `OPENAI_API_KEY` environment variable |
+
+Environment variables for OpenAI:
+
+```bash
+export OPENAI_API_KEY=your-api-key-here
+export OPENAI_MODEL=gpt-4o          # Optional, default: gpt-4o
+export OPENAI_TIMEOUT=30            # Optional, default: 30 seconds
+```
+
+## Testing
+
+Run all tests:
+
+```bash
+cd backend
+mvn test
+```
+
+Run tests for specific module:
+
+```bash
+mvn test -pl ai-service -am
+mvn test -pl ticket-service -am
+```
+
+See [Testing Guide](docs/TESTING.md) for more details.
+
+## Documentation
+
+- [Installation Guide](docs/INSTALLATION.md) - Detailed setup instructions
+- [Architecture Overview](docs/ARCHITECTURE.md) - System design and components
+- [Testing Guide](docs/TESTING.md) - How to run and write tests
+- [Contributing Guide](docs/CONTRIBUTING.md) - How to contribute
+
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
